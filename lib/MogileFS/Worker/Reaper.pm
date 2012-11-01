@@ -82,6 +82,13 @@ sub reap_dev {
         $delay = undef;
     }
 
+    # Device is not dead anymore
+    unless ($dev->dstate->is_perm_dead) {
+        error("Device dev$devid, came back to life. Strange.. Reaping will now stop");
+        $delay = undef;
+        $limit = 0;
+    }
+
     # limit == 0 if we hit the queue size limit, we'll just reschedule
     if ($limit && $dev) {
         my $sto = Mgd::get_store();
